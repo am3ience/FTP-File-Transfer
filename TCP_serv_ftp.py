@@ -24,8 +24,8 @@ from socket import *
 import threading
 import os
 
-# Retrieve file function
-def RetrFile (name, sock):
+# Send file function
+def SendFile (name, sock):
     filename = sock.recv(1024)      # get filename from user
     if os.path.isfile(filename):    # if the file exists, and is file
         sock.send("EXISTS " + str(os.path.getsize(filename))) # get size of file
@@ -42,8 +42,25 @@ def RetrFile (name, sock):
 
     sock.close()
 
+def RetrFile (name, sock):
+    filename = sock.recv(1024)      # get filename from user
+    data = sock.recv(1024)                     # recieve data
+    if data[:6] == 'EXISTS':            # checks first 6 chars of data to see if it exists
+        filesize = long(data[6:])       # get filesize, which is after the 6 chars + onwards
+        sock.send('OK')
+        f = open('new_' + filename, 'wb')       # creates the file with "new_" in the beginning
+        data = sock.recv(1024)
+        totalRecieved = len(data)               # get length of data
+        f.write(data)
+        while totalRecieved < filesize:         # if there's more than 1024 bytes of data, add more
+            data = sock.recv(1024)
+            totalRecieved += len(data)
+            f.write(data)
+
+    sock.close()
 
 
+socky = 0
 myHost = ''                             # '' set default IP to localhost
 myPort = 7005                           # Provided port number
 
@@ -59,7 +76,10 @@ while True:                             # listen until killed
     connection, address = s.accept()
     print("Client Connection at:", address)
 
-    t = threading.Thread(target=RetrFile, args=("retrThread", connection))  #function thread
+#    u = threading.Thread(target=RetrFile, args=("retrThread", connection))
+    t = threading.Thread(target=SendFile, args=("sendThread", connection))  #function thread
+#    u.start()
     t.start()
+
 
 s.close()
