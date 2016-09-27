@@ -24,6 +24,7 @@ from socket import *
 import threading
 import os
 
+
 # Send file function
 def SendFile (name, sock):
     filename = sock.recv(1024)      # get filename from user
@@ -59,15 +60,13 @@ def RetrFile (name, sock):
 
     sock.close()
 
-
-socky = 0
 myHost = ''                             # '' set default IP to localhost
 myPort = 7005                           # Provided port number
 
 s = socket(AF_INET, SOCK_STREAM)     # Create TCP socket obj
 s.bind((myHost, myPort))             # bind it to server port
 
-s.listen(5)
+s.listen(10)
 
 print("Server Started.")
 
@@ -76,10 +75,16 @@ while True:                             # listen until killed
     connection, address = s.accept()
     print("Client Connection at:", address)
 
-#    u = threading.Thread(target=RetrFile, args=("retrThread", connection))
-    t = threading.Thread(target=SendFile, args=("sendThread", connection))  #function thread
-#    u.start()
+#     start_new_thread(RetrFile ,("retrThread", connection))
+#     start_new_thread(SendFile ,("sendThread", connection))
+
+    t = threading.Thread(target=SendFile, args=("sendThread", connection))
     t.start()
+
+    connection2, address = s.accept()
+    
+    u = threading.Thread(target=RetrFile, args=("retrThread", connection2))
+    u.start()
 
 
 s.close()
