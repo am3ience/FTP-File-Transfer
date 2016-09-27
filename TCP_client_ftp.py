@@ -28,8 +28,9 @@ servPort = 7005                         # Provided port number
 s = socket(AF_INET, SOCK_STREAM)        # Create TCP socket obj
 s.connect((servHost, servPort))         # bind it to server port
 
-decision = raw_input("do you want to send or retrieve a file?(send/retrieve): ")
 
+decision = raw_input("do you want to send or retrieve a file?(send/retrieve): ")
+s.send(decision)
 if decision == "retrieve" or decision == "Retrieve":
     filename = raw_input("Filename of file you want to retrieve from server: ")      # ask user for filename
     if filename != "q":                     # a way out
@@ -58,6 +59,8 @@ if decision == "retrieve" or decision == "Retrieve":
     s.close()
 
 elif decision == "send" or decision == "Send":
+    print("List of files in current directory: ")
+    print(os.listdir("."))
     filename = raw_input("Filename of file you want to send to server: ")
     if filename != "q":
         s.send(filename)                    # send filename to server

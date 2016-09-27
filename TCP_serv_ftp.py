@@ -21,6 +21,7 @@ This "server" will send and recieve files to the above machines
 
 
 from socket import *
+from thread import *
 import threading
 import os
 
@@ -66,7 +67,7 @@ myPort = 7005                           # Provided port number
 s = socket(AF_INET, SOCK_STREAM)     # Create TCP socket obj
 s.bind((myHost, myPort))             # bind it to server port
 
-s.listen(10)
+s.listen(5)                         #up to 5 connections
 
 print("Server Started.")
 
@@ -75,16 +76,21 @@ while True:                             # listen until killed
     connection, address = s.accept()
     print("Client Connection at:", address)
 
-#     start_new_thread(RetrFile ,("retrThread", connection))
-#     start_new_thread(SendFile ,("sendThread", connection))
+    decision = connection.recv(1024)
 
-    t = threading.Thread(target=SendFile, args=("sendThread", connection))
-    t.start()
+    if decision == "retrieve" or decision == "Retrieve":
+        start_new_thread(SendFile,("sendThread",connection,))
 
-    connection2, address = s.accept()
-    
-    u = threading.Thread(target=RetrFile, args=("retrThread", connection2))
-    u.start()
 
+    elif decision == "send" or decision == "Send":
+        start_new_thread(RetrFile,("retrThread",connection,))
+        
+#    t = threading.Thread(target=SendFile, args=("sendThread", connection))
+#    t.start()
+
+#    connection2, address = s.accept()
+
+#    u = threading.Thread(target=RetrFile, args=("retrThread", connection2))
+#    u.start()
 
 s.close()
