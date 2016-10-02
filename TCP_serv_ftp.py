@@ -7,14 +7,29 @@ DATE:               September 20, 2016
 
 REVISIONS:          (Date and Description)
 
+                    September 23, 2016
+                    finished basic functionality, need to figure out a way for
+                    connection to be able to be used by both retrieve and send
+                    functions
+
+                    September 27, 2016
+                    made if statements on server in while loop, will get decision
+                    from client to either send or retrieve. It all works now.
+
+                    September30, 2016
+                    finished commenting
+
+
+
 DESIGNERS:          Paul Cabanez
 
 PROGRAMMERS:        Paul Cabanez
 
 NOTES:
 
-This program will accept TCP connections from machines running the client program
-This "server" will send and recieve files to the above machines
+This program will accept TCP connections from machines running the client program and
+will retrieve and send files as requested from the client
+
 
 """
 
@@ -44,9 +59,10 @@ def SendFile (name, sock):
 
     sock.close()
 
+# retrieve file function
 def RetrFile (name, sock):
     filename = sock.recv(1024)      # get filename from user
-    data = sock.recv(1024)                     # recieve data
+    data = sock.recv(1024)          # recieve data
     if data[:6] == 'EXISTS':            # checks first 6 chars of data to see if it exists
         filesize = long(data[6:])       # get filesize, which is after the 6 chars + onwards
         sock.send('OK')
@@ -76,21 +92,13 @@ while True:                             # listen until killed
     connection, address = s.accept()
     print("Client Connection at:", address)
 
-    decision = connection.recv(1024)
+    decision = connection.recv(1024)    # gets send/retrieve decision from client
 
-    if decision == "retrieve" or decision == "Retrieve":
+    if decision == "retrieve" or decision == "Retrieve":    # retrieve function thread
         start_new_thread(SendFile,("sendThread",connection,))
 
 
-    elif decision == "send" or decision == "Send":
+    elif decision == "send" or decision == "Send":          # send function thread 
         start_new_thread(RetrFile,("retrThread",connection,))
-        
-#    t = threading.Thread(target=SendFile, args=("sendThread", connection))
-#    t.start()
-
-#    connection2, address = s.accept()
-
-#    u = threading.Thread(target=RetrFile, args=("retrThread", connection2))
-#    u.start()
 
 s.close()
