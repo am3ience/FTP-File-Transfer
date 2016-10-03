@@ -1,7 +1,7 @@
 """
-SOURCE FILE:        TCP_client.py
+SOURCE FILE:        TCP_client_ftp.py
 
-PROGRAM:
+PROGRAM:			TCP_client_ftp
 
 DATE:               September 20, 2016
 
@@ -19,6 +19,7 @@ PROGRAMMERS:        Paul Cabanez
 
 NOTES:
 
+Make sure to start the server script first 
 This program will connect to the TCP server
 This program will send and recieve files from the server
 

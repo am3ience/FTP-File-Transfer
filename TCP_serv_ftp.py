@@ -1,7 +1,7 @@
 """
-SOURCE FILE:        TCP_serv.py
+SOURCE FILE:        TCP_serv_FTP.py
 
-PROGRAM:
+PROGRAM:			TCP_serv_FTP
 
 DATE:               September 20, 2016
 
@@ -27,6 +27,7 @@ PROGRAMMERS:        Paul Cabanez
 
 NOTES:
 
+Make sure to start this script first before the client 
 This program will accept TCP connections from machines running the client program and
 will retrieve and send files as requested from the client
 
